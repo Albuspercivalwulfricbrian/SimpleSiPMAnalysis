@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# ROOT
+
+*.pcm
+*.so
+*.d
