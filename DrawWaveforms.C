@@ -43,7 +43,7 @@ const char *filetypes[] = { "All files",     "*",
 class MyMainFrame : public TGMainFrame {
 
 private:
-   static const Int_t total_channels = NUMBER_OF_CHANNELS;
+   static const Int_t total_channels = 128;
    TRootEmbeddedCanvas  *fEcan;
    TGNumberEntry       *fNumber;
    Int_t entrynum;
@@ -127,7 +127,7 @@ MyMainFrame::MyMainFrame(const TGWindow *p, UInt_t w, UInt_t h, TString s) :
    fChannel = new TGNumberEntry(this, 0, 9,999, TGNumberFormat::kNESInteger,
                                                TGNumberFormat::kNEANonNegative,
                                                TGNumberFormat::kNELLimitMinMax,
-                                               0,NUMBER_OF_CHANNELS);
+                                               0,128);
    fChannel->Connect("ValueSet(Long_t)", "MyMainFrame", this, "SetChannel()");
    AddFrame(fChannel, new TGLayoutHints(kLHintsTop | kLHintsCenterX, 0 , 0 , 0 , 0));
 ////////////evnum
@@ -172,7 +172,8 @@ void MyMainFrame::DoDraw()
 {
    n = channel_info[ChNum].wf_size;
    Printf("Slot DoDraw()");
-   int zl = channel_info[ChNum].Get_Zero_Level(30);
+   channel_info[ChNum].Set_Zero_Level_Area(300);
+   int zl = channel_info[ChNum].Get_Zero_Level();
    int amp = channel_info[ChNum].Get_Amplitude();
    TCanvas *c1 = fEcan->GetCanvas();
    c1->SetFillColor(42);

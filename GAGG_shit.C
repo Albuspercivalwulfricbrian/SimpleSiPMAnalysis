@@ -12,9 +12,9 @@
 #include "Coeffs.h"
 #include <stdlib.h>
 #include "time_left.h"
-const int GATE_BEG = 200;
+const int GATE_BEG = 800;
 ///////////////////////Define fit constants range
-void GAGG_shit(TString source_file = "/home/admin/HOLODILNIK/HAMAMATSU/LED/T26/HV42_led2.5V.root")
+void GAGG_shit(TString source_file = "/media/doc/DATA/SiPM_low_energy_detector/FridgeData/first_test/42V_2m45s_330000000.root")
 {
     TString prefix = "_analyzed";
     // TString source_file = gSystem->GetFromPipe("yad --file-selection");
@@ -48,12 +48,15 @@ void GAGG_shit(TString source_file = "/home/admin/HOLODILNIK/HAMAMATSU/LED/T26/H
         for (Int_t channel_number = 0; channel_number < TOTAL_CHANNELS; channel_number++)
         {
             channel_info[channel_number].SplineWf();
+            channel_info[channel_number].SplineWf();
+            channel_info[channel_number].SplineWf();
             short_channel_info[channel_number].Initialize();
             channel_info[channel_number].Set_Zero_Level_Area(GATE_BEG);
-            //Int_t zero_level = channel_info[channel_number].Get_Zero_Level();
-            int zero_level = 32000; channel_info[channel_number].Set_Zero_Level(zero_level);
-            //short_channel_info[channel_number].zl_rms = channel_info[channel_number].Get_Zero_Level_RMS();
+            // Int_t zero_level = channel_info[channel_number].Get_Zero_Level();
+            Int_t zero_level = channel_info[channel_number].CalculateZlwithNoisePeaks(450);
             
+            // int zero_level = 32000; channel_info[channel_number].Set_Zero_Level(zero_level);
+            short_channel_info[channel_number].zl_rms = channel_info[channel_number].Get_Zero_Level_RMS();
             //channel_info[channel_number].SplineWf();
             Int_t pp = channel_info[channel_number].Get_time();
             //channel_info[channel_number].AssumeSmartScope(); 

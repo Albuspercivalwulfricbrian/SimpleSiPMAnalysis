@@ -45,12 +45,13 @@ class ChannelEntry {
     Short_t wf[MAX_N_SAMPLES];
 
     private:
+    Short_t dwf[MAX_N_SAMPLES] = {0};
     Int_t fZlLeft = 0;
-    Int_t fZlRight = 20;
-    Float_t zl;
+    Int_t fZlRight = 200;
+    Float_t zl = 0;
     IntegralInfo II;
     Int_t amp = 0;
-    Short_t peak_position;
+    Short_t peak_position = 0;
     Int_t fGATE_BEG = 1000000;
     Int_t fGATE_END = -1000000;
     public:
@@ -58,12 +59,13 @@ class ChannelEntry {
     Int_t SetBranch(TTree *tree, Int_t channel_num);
     void Initialize();
     void SplineWf();
-    void DiffWf();
+    void CalculateDiffWf();
     void AssumeSmartScope();
     void SetBoarders(Int_t,Int_t);
     void FindDiffWfPars(Short_t &min_diff, Short_t &min_time, Short_t &max_diff, Short_t &max_time);
     void Set_Zero_Level(int);
     void Set_Zero_Level_Area(Int_t i);
+    Float_t CalculateZlwithNoisePeaks(int);
     Int_t Get_Zero_Level();
     Float_t Get_Zero_Level_RMS();
     Float_t Get_Charge();

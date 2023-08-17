@@ -62,7 +62,7 @@ using namespace std;
     
     void ChannelEntry::Initialize()
     {
-        for (int i = 0; i < sizeof(wf)/sizeof(wf[0]); i++) wf[i] = 0;
+        for (int i = 0; i < sizeof(wf)/sizeof(wf[0]); i++) {wf[i] = 0; dwf[i] = 0;}
         wf_size = 0;
     }
 
@@ -82,19 +82,32 @@ using namespace std;
         for (Int_t i = 0; i < wf_size; i++) wf[i] = wf1[i];
     }
 
-    void ChannelEntry::DiffWf()
+    void ChannelEntry::CalculateDiffWf()
     {
         const Float_t Diff_window = 4;
-        Short_t wf1[MAX_N_SAMPLES] = {0};
+        // Short_t wf1[MAX_N_SAMPLES] = {0};
         for (Int_t i = 0; i < wf_size; i++)
         {
             Int_t il=i-Diff_window; Int_t ir=i+Diff_window;
             if (il<0) il=0;
             if (ir>wf_size-1) ir=wf_size-1;
-            wf1[i]=(Short_t)((Float_t)(wf[ir]-wf[il])/(Float_t)(ir-il));
+            dwf[i]=(Short_t)((Float_t)(wf[ir]-wf[il])/(Float_t)(ir-il));
         }
-        for (Int_t i = 0; i < wf_size; i++) wf[i] = wf1[i];
-    }    
+        // for (Int_t i = 0; i < wf_size; i++) wf[i] = dwf[i];
+    } 
+
+    Float_t ChannelEntry::CalculateZlwithNoisePeaks(int a)
+    {
+        CalculateDiffWf();
+        Float_t sum = 0;
+        Float_t counter = 0;
+        for (int s=fZlLeft+1; s < fZlRight; ++s) {
+
+            if (abs(dwf[s]) < a && abs(dwf[s-1]) < a && abs(dwf[s+1]) < a) {sum += wf[s]; counter++;}
+        }
+        zl = sum/counter;
+    return zl;
+    }
 
     void ChannelEntry::AssumeSmartScope()
     {
