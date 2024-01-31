@@ -12,9 +12,9 @@
 #include "Coeffs.h"
 #include <stdlib.h>
 #include "time_left.h"
-const int GATE_BEG = 800;
+const int GATE_BEG = 30;
 ///////////////////////Define fit constants range
-void GAGG_shit(TString source_file = "/media/doc/DATA/SiPM_low_energy_detector/FridgeData/first_test/42V_2m45s_330000000.root")
+void GAGG_shit(TString source_file = "/mnt/DATA/Xi_Noise/030dbfa9_20240125_152324.root")
 {
     TString prefix = "_analyzed";
     // TString source_file = gSystem->GetFromPipe("yad --file-selection");
@@ -38,7 +38,7 @@ void GAGG_shit(TString source_file = "/media/doc/DATA/SiPM_low_energy_detector/F
     PMT_tree->AddFile( (source_file + "/adc64_data").Data() );
     for (Int_t channel_number = 0; channel_number < TOTAL_CHANNELS; channel_number++)
         // (channel_info[channel_number]).SetBranch(PMT_tree,channel_number);
-        PMT_tree->SetBranchAddress(Form("channel_%i",channel_number),&channel_info[channel_number]);
+        PMT_tree->SetBranchAddress(Form("channel_%i",channel_number+48),&channel_info[channel_number]);
 
     Int_t total_entries = PMT_tree->GetEntries();
     time_t start_time = time(NULL);
@@ -49,19 +49,21 @@ void GAGG_shit(TString source_file = "/media/doc/DATA/SiPM_low_energy_detector/F
         {
             channel_info[channel_number].SplineWf();
             channel_info[channel_number].SplineWf();
-            channel_info[channel_number].SplineWf();
+            // channel_info[channel_number].SplineWf();
             short_channel_info[channel_number].Initialize();
-            channel_info[channel_number].Set_Zero_Level_Area(GATE_BEG);
+            channel_info[channel_number].Set_Zero_Level_Area(40);
+
             // Int_t zero_level = channel_info[channel_number].Get_Zero_Level();
-            Int_t zero_level = channel_info[channel_number].CalculateZlwithNoisePeaks(450);
-            
-            // int zero_level = 32000; channel_info[channel_number].Set_Zero_Level(zero_level);
+            Int_t zero_level = channel_info[channel_number].CalculateZlwithNoisePeaks(180);
+            //  int zero_level = 27000; channel_info[channel_number].Set_Zero_Level(zero_level);
             short_channel_info[channel_number].zl_rms = channel_info[channel_number].Get_Zero_Level_RMS();
             //channel_info[channel_number].SplineWf();
+            channel_info[channel_number].SetBoarders(30,100); 
             Int_t pp = channel_info[channel_number].Get_time();
-            //channel_info[channel_number].AssumeSmartScope(); 
-            channel_info[channel_number].SetBoarders(610,660); 
+            short_channel_info[channel_number].nCoincidencePeaks = channel_info[channel_number].CountCoincidencePeaks(900, 2200);
             short_channel_info[channel_number].amp = channel_info[channel_number].Get_Amplitude();
+           
+            // channel_info[channel_number].AssumeSmartScope(); 
             short_channel_info[channel_number].charge = channel_info[channel_number].Get_Charge();
             short_channel_info[channel_number].time = channel_info[channel_number].Get_time_gauss();
             short_channel_info[channel_number].zl = zero_level;
@@ -75,9 +77,5 @@ void GAGG_shit(TString source_file = "/media/doc/DATA/SiPM_low_energy_detector/F
 
     delete PMT_tree;
     combined_tree->Write();
-    combined_root->Close();
+    combined_root->Close(); 
 }
-        
-
-
-

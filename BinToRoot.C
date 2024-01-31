@@ -11,7 +11,7 @@
 const Int_t H_SIZE = 7168;
 const Int_t channels_number = 2;
 
-void BinToRoot(TString source_file = "/media/doc/DATA/SiPM_low_energy_detector/FridgeData/first_test/42V_2m45s_330000000")
+void BinToRoot(TString source_file = "/home/admin/HOLODILNIK/Long_Kabel_Tests/LongKabel_V1_usil130_2200_X1")
 {
     // string pathName = "/media/doc/DATA/SiPM_low_energy_detector/2_days_cooling with good reflection/";
     //TString source_file = gSystem->GetFromPipe("yad --file-selection");

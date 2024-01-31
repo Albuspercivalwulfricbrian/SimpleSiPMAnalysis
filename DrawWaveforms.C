@@ -178,7 +178,7 @@ void MyMainFrame::DoDraw()
    TCanvas *c1 = fEcan->GetCanvas();
    c1->SetFillColor(42);
    c1->SetGrid();
-   Double_t x[2048] = {0.}; Double_t y[1024] = {0.}; Double_t z[2048] = {0.};
+   Double_t x[8192] = {0.}; Double_t y[8192] = {0.}; Double_t z[8192] = {0.};
    cout << amp << endl;
 
 
