@@ -1,7 +1,8 @@
 #ifndef CHANNEL_ENTRY_H
 #define CHANNEL_ENTRY_H
-#include<TTree.h>
-#include"constants.h"
+#include <TTree.h>
+#include "constants.h"
+#include "PronyFitter.h"
 using namespace std;
 // const int MAX_N_SAMPLES = 2048;
 
@@ -13,6 +14,29 @@ struct IntegralInfo
     void Initialize();
 };
 
+struct FitResults
+{
+    Float_t fit_charge;
+    Float_t fit_amp;
+    Float_t fit_time;
+    
+};
+
+struct HarmonicsStruct
+{
+    Float_t first_harmonic, second_harmonic, fit_chi2, fit_R2, fit_charge, charge;
+
+    void Initialize()
+    {
+        first_harmonic = 0.;
+        second_harmonic = 0.;
+        fit_chi2 = 999;
+        fit_R2 = 999;
+        charge = 0.;
+        fit_charge = 0.;
+    }
+};
+
 struct short_energy_ChannelEntry
 {
     Float_t charge;
@@ -21,6 +45,7 @@ struct short_energy_ChannelEntry
     Float_t zl;
     Float_t zl_rms;
     IntegralInfo II;
+    FitResults fit;
     Short_t nCoincidencePeaks;
     static TString GetChName(Int_t channel_num);
     TBranch* CreateBranch(TTree *tree, Int_t channel_num);
@@ -51,6 +76,7 @@ class ChannelEntry {
     Int_t fZlRight = 200;
     Float_t zl = 0;
     IntegralInfo II;
+    FitResults fit;
     Int_t amp = 0;
     Short_t peak_position = 0;
     Int_t fGATE_BEG = 1000000;
@@ -76,8 +102,8 @@ class ChannelEntry {
     Float_t Get_time_gauss();
     UShort_t Get_Amplitude();
     IntegralInfo GetIntegralInfo();
+    FitResults GetFitResults();
     void FillWf(Short_t *Ewf);
-
 };
 
 //##################
@@ -148,6 +174,14 @@ using namespace std;
         npeaks = 0;
         end_amplitude = 0;    
     }
+
+    void FitResults::Initialize()
+    {
+        fit_amp = 0;
+        fit_charge = 0;
+        fit_time = 0;
+    }
+
     void short_energy_ChannelEntry::Initialize()
     {
         charge = 0.;
@@ -170,6 +204,8 @@ using namespace std;
 	    return tree->SetBranchAddress(GetChName(channel_num).Data(), this);
     }
     
+
+
     TString diff_short_energy_ChannelEntry::GetChName(Int_t channel_num)
     {
 	    return TString::Format("diff_channel_%i", channel_num);
@@ -399,6 +435,10 @@ using namespace std;
         return II;
     }
 
+    FitResults ChannelEntry::GetFitResults()
+    {
+        return fit;
+    }
 
     Short_t ChannelEntry::Get_time()
     {
